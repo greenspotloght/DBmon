@@ -1,0 +1,68 @@
+{% load staticfiles %}
+<script type="text/javascript" src="{% static "js/canvasjs.min.js" %}"></script>
+
+
+
+<script type="text/javascript">
+window.onload = function () {
+
+    var chart = new CanvasJS.Chart("chartContainer",
+  	{
+  		theme: "theme1",
+  		title:{
+        text: "DBSIZE",
+        fontFamily: "fantasy"
+  		},
+      animationEnabled: true,
+      zoomEnabled:true,
+      legend: {
+            verticalAlign: "center",
+            horizontalAlign: "right",
+            cursor: "pointer",
+            itemclick: function (e) {
+                //console.log("legend click: " + e.dataPointIndex);
+                //console.log(e);
+                if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                } else {
+                    e.dataSeries.visible = true;
+                }
+
+                e.chart.render();
+            }
+        },
+        axisY:{
+          gridColor: "#e3e3e3"
+        },
+        toolTip: {
+          shared: true
+        },
+  		data: [
+    		{
+          showInLegend: true,
+          color: 'blue',
+          legendText: "{{i}}",
+          toolTipContent:  "{label} - {y} MB",
+          legendText: "DBSIZE",
+    			dataPoints: [
+            {% for i in dbsize %}
+    				{  y: {{i.dbsize}}, label:'{{i.datetime}}'},
+            {% endfor %}
+    			]
+    		},
+
+  		]
+  	});
+    chart.render();
+  }
+  function openpage(e){
+  console.log(e.dataPoint);
+  var url = e.dataPoint.detail;
+  var newwin = window.open();   //此行一定要如此書寫,否則失效
+  newwin.location= url;   // url是 cgi 程式或者超連結 html
+  }
+</script>
+<div class="row m-b-2">
+    <div id="chartContainer" style="height: 250px; width: 100%;" ></div>
+
+</div>

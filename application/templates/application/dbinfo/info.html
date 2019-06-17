@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+{% block title %} DBinFormation {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+
+{% block content %}
+
+
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard_graph">
+
+          <div class="row x_title">
+            <div class="col-md-3 pull-left">
+              <h3>DB Information</h3>
+            </div>
+
+            <div class="col-md-9 pull right">
+                  <form action="" method="get" enctype="multipart/form-data">
+                      <div class="col-sm-3">
+                      <label for="date1">起始日期</label>
+                        <input id="date1" type="date" name="date1" placeholder="YYYY-MM-DD" value="{{self.date1}}" onchange="this.form.submit()">
+                      </div>
+                      <div class="col-sm-3">
+                      <label for="date2">結束日期</label>
+                        <input id="date2" type="date" name="date2" placeholder="YYYY-MM-DD" value="{{self.date2}}" onchange="this.form.submit()">
+                      </div>
+                      <div class="col-sm-2">
+                          <select class="form-control" name="host" id="host">
+                            {%for f in self.host_list%}
+                            <option{%if self.host == f%} SELECTED{%endif%}>{{f}}</option>
+                            {%endfor%}
+                          </select>
+                      </div>
+                      <div class="col-sm-1">
+                        <input type="submit" class="btn btn-info btn-sm" value="搜尋" />
+                      </div>
+                      <p class="text-right text-muted">更新時間：{{update_time}}</p>
+                  </form>
+            </div>
+
+          </div>
+          <div class="x_content">
+
+            <div class="col-xs-9">
+              <!-- Tab panes -->
+              <div class="tab-content">
+                <div class="tab-pane active" id="basic-r">
+                  <p class="lead">BASIC</p>
+                  <div class="col-xs-12">
+                    <div class="col-xs-4">
+                      {% for i in dbinfo %}
+                      <h4><strong>DB ID :  {{i.dbid}} </strong></h4>
+                      <h4><strong>DB name :   {{i.db_name}} </strong></h4>
+                      <h4><strong>DB Mode :   {{i.open_mode}} </strong></h4>
+                      <h4><strong>Log Mode :   {{i.log_mode}} </strong></h4>
+                      <h4><strong>Character :   {{i.NLS_CHARACTERSET}} </strong></h4>
+                      <h4><strong>Build ver :   {{i.build_ver}} </strong></h4>
+                      {% endfor %}
+                    </div>
+                    <div class="col-xs-4">
+                      {% for i in dbinfo %}
+                      <h4><strong>Instance Number :   {{i.instance_number}} </strong></h4>
+                      <h4><strong>Instance Name :  {{i.instance_name}} </strong></h4>
+                      <h4><strong>Status :   {{i.status}} </strong></h4>
+                      <h4><strong>Startup Time :   {{i.startup_time}} </strong></h4>
+                      <h4><strong>Edition :   {{i.edition}} </strong></h4>
+                      <h4><strong>Expire Date :   {{i.expire_date}} </strong></h4>
+                      {% endfor %}
+                    </div>
+                    <div class="col-xs-4">
+                      {% for i in dbinfo %}
+                      <h4><strong>Host Name :   {{i.host_name}} </strong></h4>
+                      <h4><strong>OS :  {{i.platform_name}} </strong></h4>
+                      <h4><strong>CPU :   {{i.cpu_model}} </strong></h4>
+                      <h4><strong>Limit user :   {{i.limit_user}} </strong></h4>
+                      <h4><strong>Limit CPU :   {{i.limit_cpu}} </strong></h4>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane" id="memory-r">
+                  <p class="lead">Memory</p>
+                  <div class="col-xs-12">
+                    <div class="col-xs-4">
+                      {% for i in memory %}
+                      <h4><strong>Tibero Shared Memory :   {{i.TSM}} MB </strong></h4>
+                      <h4><strong>Shared Cache Size :  {{i.shared_cache_size}} MB </strong></h4>
+                      <h4><strong>Buffer Size :   {{i.buffer_size}} MB </strong></h4>
+                      <h4><strong>Block Size :   {{i.DB_block}} K</strong></h4>
+                      <h4><strong>Redo Log :   {{i.redo_log}} MB </strong></h4>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xs-3">
+              <!-- required for floating -->
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs tabs-right">
+                <li class="active"><a href="#basic-r" data-toggle="tab">Basic Info</a>
+                </li>
+                <li><a href="#memory-r" data-toggle="tab">Memory Info</a>
+                </li>
+              </ul>
+            </div>
+
+
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+
+  </br>
+
+
+		<!-- <div class="col-sm-12" id="errorlog">
+		  <div class="table-responsive">
+		    <table class="table table-striped" class="scrollable" id="error_tb">
+		      <thead>
+		      <tr>
+		        <th>DateTime</th>
+		        <th>internet IP</th>
+		        <th>intranet IP</th>
+		        <th>Priority</th>
+		        <th>Category</th>
+		        <th>MessageID</th>
+		        <th>Message</th>
+		      </tr>
+		      </thead>
+		      <tbody>
+
+		      </tbody>
+		    </table>
+
+		    <script>
+		    $(document).ready(function() {
+		          $('#error_tb').DataTable( {
+		              dom: 'Bfrtip',
+		              buttons: [
+		                  'print'
+		              ],
+		              "order": [[ 0, "desc" ]]
+		          } );
+		      } );
+		    </script>
+		    </div>
+		  </div>
+		</div>-->
+
+		<!-- <div class="page-content-toggle" id="page-content-wrapper">
+		  <div class="container-fluid">  -->
+
+		    <!-- 1st row -->
+		    <div class="row">
+		      <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>table_space</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a href="#">Settings 1</a>
+                      </li>
+                      <li><a href="#">Settings 2</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li><a class="close-link"><i class="fa fa-close"></i></a>
+                  </li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+  		        <div class="x_content">
+  		          <iframe src="{% url 'application:tbspace' %}" width="100%" height="400px" frameborder="0" scrolling="no">
+  		            <p>Your browser does not support iframes.</p>
+  		          </iframe>
+  		        </div>
+            </div>
+		      </div>
+		    </div>
+		    <!-- /1st row -->
+		    <!-- 2nd row -->
+		    <div class="row m-b-6">
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>DBSIZE</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a href="#">Settings 1</a></li>
+                      <li><a href="#">Settings 2</a></li>
+                    </ul>
+                  </li>
+                  <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+  		        <div class="x_content">
+  		          <iframe src="{% url 'application:dbsize' %}" width="100%" height="300px" frameborder="0" scrolling="no">
+  		            <p>Your browser does not support iframes.</p>
+  		          </iframe>
+		          </div>
+            </div>
+		      </div>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>session</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a href="#">Settings 1</a></li>
+                      <li><a href="#">Settings 2</a></li>
+                    </ul>
+                  </li>
+                  <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+  		        <div class="x_content">
+		          <iframe src="{% url 'application:session' %}" width="100%" height="300px" frameborder="0" scrolling="no">
+		            <p>Your browser does not support iframes.</p>
+		          </iframe>
+		        </div>
+		      </div>
+		    </div>
+        </div>
+		    <!-- /2nd row -->
+		    <!-- 3rd row -->
+		    <div class="row">
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>PGA</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a href="#">Settings 1</a></li>
+                      <li><a href="#">Settings 2</a></li>
+                    </ul>
+                  </li>
+                  <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+  		        <div class="x_content">
+  		          <iframe src="{% url 'application:sga' %}" width="100%" height="400px" frameborder="0" scrolling="no">
+  		            <p>Your browser does not support iframes.</p>
+  		          </iframe>
+		          </div>
+            </div>
+		      </div>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>PGA</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a href="#">Settings 1</a></li>
+                      <li><a href="#">Settings 2</a></li>
+                    </ul>
+                  </li>
+                  <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+  		        <div class="x_content">
+		          <iframe src="{% url 'application:pga' %}" width="100%" height="400px" frameborder="0" scrolling="no">
+		            <p>Your browser does not support iframes.</p>
+		          </iframe>
+		        </div>
+		      </div>
+
+  		    </div>
+  		  </div>
+
+    <!--</div>
+  </div>-->
+
+{% endblock %}

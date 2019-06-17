@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %} Machine Management {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+
+{% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<div class="dashboard_graph">
+
+			<div class="row x_title">
+				<div class="col-md-4 pull-left">
+					<h1>Machine Management</h1>
+				</div>
+
+			</div>
+			<div class="x_content">
+
+
+				<div class="col-sm-6">
+					<div class="col-sm-3 " style="float:right">
+					  <a href="{% url 'manage_setting:company_edit' %}"><input type='button' value='編輯公司資訊'></a>
+					</div>
+				  <h5><strong>公司名稱</strong>：{{company.company_name}}</h5>
+				  <h5><strong>統編</strong>：{{company.company_id}}</h5>
+				  <h5><strong>IP</strong>：{{company.company_ip}}</h5>
+				  <h5><strong>IP2</strong>：{{company.company_ip2}}</h5>
+				  <h5><strong>IP3</strong>：{{company.company_ip3}}</h5>
+				  <h5><strong>電話/傳真</strong>：{{company.company_tel}} / {{company.company_fax}}</h5>
+				  <h5><strong>地址</strong>：{{company.company_address}}</h5>
+				  <h5><strong>有效期限</strong>：{{company.date_expiration}}</h5>
+				  <h5><strong>使用中</strong>：{{company.is_active}}</h5>
+				  <h5><strong>Line群組id</strong>：{{company.line_group_id}}</h5>
+				</div>
+
+				<div class="col-sm-12" id="errorlog">
+				  <div class="table-responsive">
+				    <table class="table table-striped" class="scrollable" id="user_tb">
+				      <thead>
+				      <tr>
+				        <th><a href="{% url 'manage_setting:mc_add' %}"><input type='button' value='新增'></a></th>
+				        <th>HostName</th>
+				        <th>IP</th>
+				        <th>CPU_limit</th>
+				        <th>Disk_limit</th>
+								<th>Disk Use Percentage</th>
+                <th>Make Report Time</th>
+								<th>Line Notify</th>
+				      </tr>
+				      </thead>
+				      <tbody>
+								{% for w in mc %}
+				      <tr>
+				        <td><a href="{% url 'manage_setting:mc_edit' %}?hostname={{w.hostname}}&ip={{w.ip}}"><input type='button' value='編輯'></a>
+				        </br>
+				        <a href="javascript:if (confirm('你確定要刪除\nHostName：{{w.hostname}}\nIP：{{w.ip}} 嗎?')) location.href='{% url 'manage_setting:mc_del' %}?hostname={{w.hostname}}&ip={{w.ip}}'"><input type='button' value='刪除'></a></td>
+								<td>{{w.hostname}}</td>
+								<td>{{w.ip}}</td>
+								<td>{{w.cpu_limit}}</td>
+								<td>{{w.disk_limit}}</td>
+								<td>{% if w.disk_percent == 0%}OFF {% else %} ON {% endif %}</td>
+                <td>{{w.report_time}}</td>
+								<td>{% if w.line == 0%}OFF {% else %} ON {% endif %}</td>
+				      </tr>
+								{% endfor %}
+
+				      </tbody>
+				    </table>
+
+				    <script>
+				    $(document).ready(function() {
+				          $('#user_tb').DataTable( {
+				              dom: 'Bfrtip',
+				              buttons: [
+				                  'print'
+				              ],
+				              "order": [[ 1, "asc" ]]
+				          } );
+				      } );
+				    </script>
+				  </div>
+				</div>
+
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

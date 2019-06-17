@@ -1,0 +1,11 @@
+six==1.11.0
+Django==1.11
+pymongo==3.6.1
+line_bot_sdk==1.5.0
+pandas==0.23.0
+APScheduler==3.5.1
+PyMySQL==0.8.1
+django-bootstrap
+django-bootstrap3
+django-bootstrap-form
+mod_wsgi

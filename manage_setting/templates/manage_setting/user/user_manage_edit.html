@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{%block header%}
+  <div class="page-header">
+    <h1 class="text-success"><span style="font-family:Arial,cursive"><strong>編輯User</strong></span></h1>
+  </div>
+{%endblock%}
+
+{% block content %}
+  <div class="col-sm-6">
+    <div class="col-sm-12">
+      <form action="" method="post">
+        {% csrf_token %}
+        <table>
+          {% load bootstrap %}
+          {{form|bootstrap}}
+          {{form1|bootstrap}}
+        </table>
+        <input type="submit" class="btn btn-info btn-sm" value="確認" />
+        <input type ="button" class="btn btn-info btn-sm" onclick="history.back()" value="取消"></input>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

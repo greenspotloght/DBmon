@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %} User Manage {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+
+{% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<div class="dashboard_graph">
+
+			<div class="row x_title">
+				<div class="col-md-4 pull-left">
+					<h1>User Management</h1>
+				</div>
+
+			</div>
+			<div class="x_content">
+
+				<div class="col-sm-6">
+				  <h5><strong>公司名稱</strong>：{{company.company_name}}</h5>
+				  <h5><strong>統編</strong>：{{company.company_id}}</h5>
+				  <h5><strong>IP</strong>：{{company.company_ip}}</h5>
+				  <h5><strong>IP2</strong>：{{company.company_ip2}}</h5>
+				  <h5><strong>IP3</strong>：{{company.company_ip3}}</h5>
+				  <h5><strong>電話/傳真</strong>：{{company.company_tel}} / {{company.company_fax}}</h5>
+				  <h5><strong>地址</strong>：{{company.company_address}}</h5>
+				  <h5><strong>有效期限</strong>：{{company.date_expiration}}</h5>
+				  <h5><strong>使用中</strong>：{{company.is_active}}</h5>
+				  <h5><strong>Line群組id</strong>：{{company.line_group_id}}</h5>
+				</div>
+				<div class="col-sm-6 text-right">
+				  <a href="{% url 'manage_setting:company_edit' %}"><input type='button' value='編輯公司資訊'></a>
+				</div>
+				<div class="col-sm-12" id="errorlog">
+				  <div class="table-responsive">
+				    <table class="table table-striped" class="scrollable" id="user_tb">
+				      <thead>
+				      <tr>
+				        <th><a href="{% url 'manage_setting:user_add' %}"><input type='button' value='新增'></a></th>
+				        <th>使用者名稱</th>
+				        <th>姓氏</th>
+				        <th>名字</th>
+				        <th>信箱</th>
+				        <th>Line使用者id</th>
+				      </tr>
+				      </thead>
+				      <tbody>
+				      {%for w in company_user%}
+				      <tr>
+				        <td><a href="{% url 'manage_setting:user_edit' %}?username={{w.user.username}}"><input type='button' value='編輯'></a>
+				        </br>
+				        <a href="javascript:if (confirm('你確定要刪除\nUserName：{{w.user.username}}\nemail：{{w.user.email}} 嗎?')) location.href='{% url 'manage_setting:user_del' %}?username={{w.user.username}}'"><input type='button' value='刪除'></a></td>
+				        <td>{{w.user.username}}</td>
+				        <td>{{w.user.last_name}}</td>
+				        <td>{{w.user.first_name}}</td>
+				        <td>{{w.user.email}}</td>
+				        <td>{{w.line_user_id}}</td>
+				      </tr>
+				      {%endfor%}
+				      </tbody>
+				    </table>
+
+				    <script>
+				    $(document).ready(function() {
+				          $('#user_tb').DataTable( {
+				              dom: 'Bfrtip',
+				              buttons: [
+				                  'print'
+				              ],
+				              "order": [[ 1, "asc" ]]
+				          } );
+				      } );
+				    </script>
+				  </div>
+				</div>
+
+
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

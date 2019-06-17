@@ -1,0 +1,705 @@
+{% extends 'base.html' %}
+
+{% block title %} Please Login {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="dashboard_graph">
+      <div class="row x_title">
+        <div class="col-md-4 pull-left">
+          <h3>Daily Summary({{yesterday}})</h3>
+        </div>
+        <div class="col-md-8 pull right"  >
+              <form action="" method="get" enctype="multipart/form-data">
+                  <div class="col-sm-2 ">
+                      <select class="form-control" name="host" id="host">
+                        {%for f in self.host_list%}
+                        <option{%if self.host == f%} SELECTED{%endif%}>{{f}}</option>
+                        {%endfor%}
+                      </select>
+                  </div>
+                  <div class="col-sm-2" style="margin-top:5px" >
+                  <label for="date">日期</label>
+                    <input id="date" type="date" name="date" value="{{self.date}}" onchange="this.form.submit()">
+                  </div>
+
+                  <div class="col-sm-1" style="margin-right:20px">
+                    <input type="submit" class="btn btn-info btn-sm" value="搜尋" />
+                  </div>
+                  <button onclick="printPage()">Print this page</button>
+                  <p class="text-right text-muted">更新時間：{{daliy_desc.0.datetime}}</p>
+              </form>
+        </div>
+      </div>
+
+      <div class="x_content">
+        <div class="col-md-12">
+          <div class="col-md-6">
+            <div class="row tile_count" style="margin-top:5px;margin-bottom:5px">
+              <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Max CPU Usage</span>
+                <div class="count"><h1>{{daliy_desc.0.cpu_max}} %</h1></div>
+                <!--<span class="count_bottom"><i class="green">4% </i> From last Week</span>-->
+              </div>
+              <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-clock-o"></i> Free Memoery Mean</span>
+                <div class="count"><h1>{{daliy_desc.0.free_memory_mean}} MB</h1></div>
+                <!--<span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>3% </i> From last Week</span>-->
+              </div>
+              <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Max IO Input</span>
+                <div class="count green"><h1>{{daliy_desc.0.io_in_max}} B/Sec</h1></div>
+                <!--<span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>-->
+              </div>
+            </div>
+            <div class="row tile_count" style="margin-top:5px;margin-bottom:5px">
+              <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Max IO Output</span>
+                <div class="count"><h1>{{daliy_desc.0.io_out_max}} B/Sec</h1></div>
+                <!--<span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12% </i> From last Week</span>-->
+              </div>
+              <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Max Swap Input</span>
+                <div class="count"><h1>{{daliy_desc.0.swap_in_max}} B/Sec</h1></div>
+                <!--<span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>-->
+              </div>
+              <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Max Swap Output</span>
+                <div class="count"><h1>{{daliy_desc.0.swap_out_max}} B/Sec</h1></div>
+                <!--<span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>-->
+              </div>
+            </div>
+            <div class="row tile_count" style="margin-top:5px;margin-bottom:5px">
+              <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Max Session</span>
+                <div class="count"><h1>{{daliy_desc.0.max_ses}} B/Sec</h1></div>
+                <!--<span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>-->
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div id="disk_chart" style="height: 350px; width: auto;" ></div>
+          </div>
+
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</div>
+
+</br>
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="dashboard_graph">
+      <div class="row x_title">
+        <div class="col-md-2 pull-left">
+          <h3>Performance Summary</h3>
+        </div>
+        <div class="col-md-10 pull right" >
+              <form action="" method="get" enctype="multipart/form-data">
+                  <div class="col-sm-4">
+                      <select class="form-control" name="interval" id="interval">
+                        {%for i in interval_list%}
+                        <option{%if interval == i%} SELECTED{%endif%}>{{i}}</option>
+                        {%endfor%}
+                      </select>
+                  </div>
+
+                  <div class="col-sm-1" style="margin-right:20px">
+                    <input type="submit" class="btn btn-info btn-sm" value="搜尋" />
+                  </div>
+              </form>
+        </div>
+      </div>
+      <div class="x_content">
+        {% if not interval_list %}
+        <div class="bs-example" data-example-id="simple-jumbotron">
+          <div class="jumbotron">
+            <h1>Hello, </h1>
+            <p>Your server had ran very well at {{yesterday}}.</p>
+          </div>
+        </div>
+        {% else %}
+        <div class="row m-b-6">
+          <div class="row tile_count" style="margin-top:5px;margin-bottom:5px">
+            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+              <span class="count_top"><i class="fa fa-user"></i> Session Range</span>
+              <div class="count"><h1>{{info.0.session_s}} - {{info.0.session_e}}</h1></div>
+              <!--<span class="count_bottom"><i class="green">4% </i> From last Week</span>-->
+            </div>
+            <div class="col-md- col-sm-4 col-xs-6 tile_stats_count">
+              <span class="count_top"><i class="fa fa-clock-o"></i> Critical</span>
+              <div class="count"><h1>{{info.0.reason}} </h1></div>
+              <!--<span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>3% </i> From last Week</span>-->
+            </div>
+
+
+          </div>
+        </div>
+
+        <div class="row m-b-6">
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  </li>
+                  <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                <div id="cpu_chart" style="height: 350px; width: 100%;" ></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  </li>
+                  <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                  <div id="process" style="height: 350px; width: 100%;" ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /1st row -->
+
+        <!-- 3rd row -->
+        <div class="row">
+          <div class="col-md-6 col-sm-6 col-xs-12" >
+            <div class="x_panel">
+              <div class="x_title">
+                <h2></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  </li>
+                  <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                 <div id="mem_chart" style="height: 350px; width: 100%;" ></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-sm-6 col-xs-12" >
+            <div class="x_panel">
+              <div class="x_title">
+                <h2></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  </li>
+                  <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                 <div id="swap_chart" style="height: 350px; width: 100%;" ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class='row'>
+          <div class="col-md-6 col-sm-6 col-xs-12" >
+            <div class="x_panel">
+              <div class="x_title">
+                <h2></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  </li>
+                  <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                 <div id="io_chart" style="height: 350px; width: 100%; " ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</div>
+
+{% endblock content%}
+
+
+
+{% block javascripts %}
+  {{ block.super }}
+    <!-- Chart.js -->
+    {% load static %}
+    <script type="text/javascript" src="{% static "js/canvasjs.min.js" %}"></script>
+    <script type="text/javascript">
+    window.onload = function () {
+        {% if  interval_list %}
+        var chart = new CanvasJS.Chart("cpu_chart",
+      	{
+      		theme: "theme1",
+      		title:{
+            text: "CPU Used(%)",
+            fontFamily: "fantasy"
+      		},
+          axisY:{
+            maximum: 105,
+          },
+          toolTip: {
+            shared: true
+          },
+          axisY:{
+            gridColor: "#e3e3e3"
+          },
+          animationEnabled: true,
+          zoomEnabled:true,
+          legend: {
+
+			          verticalAlign: "center",
+			          horizontalAlign: "right",
+                cursor: "pointer",
+                itemclick: function (e) {
+                    //console.log("legend click: " + e.dataPointIndex);
+                    //console.log(e);
+                    if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                    } else {
+                        e.dataSeries.visible = true;
+                    }
+
+                    e.chart.render();
+                }
+            },
+      		data: [
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "user - {label} - {y} %",
+              legendText: "user",
+              lineThickness: 3,
+        			dataPoints: [
+                {% for i in perf_sum %}
+        				{  y: {{i.user_time}}, label:'{{i.datetime}}'},
+                {% endfor %}
+        			]
+        		},
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "sys - {label} - {y} %",
+              legendText: "sys",
+              lineThickness: 3,
+        			dataPoints: [
+                {% for i in perf_sum %}
+        				{  y: {{i.sys_time}}, label:'{{i.datetime}}'},
+                {% endfor %}
+        			]
+        		},
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "idle - {label} - {y} %",
+              legendText: "idle",
+              lineThickness: 3,
+        			dataPoints: [
+                {% for i in perf_sum %}
+        				{  y: {{i.idle_time}}, label:'{{i.datetime}}'},
+                {% endfor %}
+        			]
+        		},
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "wait - {label} - {y} %",
+              legendText: "wait",
+              lineThickness: 3,
+        			dataPoints: [
+                {% for i in perf_sum %}
+        				{  y: {{i.wait_time}}, label:'{{i.datetime}}'},
+                {% endfor %}
+        			]
+        		},
+      		]
+      	});
+        chart.render();
+        var chart = new CanvasJS.Chart("process",
+        {
+          theme: "theme1",
+          title:{
+            text: "Runable Processes",
+            fontFamily: "fantasy"
+          },
+          toolTip: {
+            shared: true
+          },
+          axisY:{
+            gridColor: "#e3e3e3"
+          },
+          legend: {
+                verticalAlign: "center",
+                horizontalAlign: "right",
+                cursor: "pointer",
+                cursor: "pointer",
+                itemclick: function (e) {
+                    //console.log("legend click: " + e.dataPointIndex);
+                    //console.log(e);
+                    if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                    } else {
+                        e.dataSeries.visible = true;
+                    }
+
+                    e.chart.render();
+                }
+            },
+          animationEnabled: true,
+          zoomEnabled:true,
+          data: [
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "run - {label} - {y} ",
+              legendText: "run",
+              lineThickness: 3,
+              dataPoints: [
+                {% for i in perf_sum %}
+                {  y: {{i.runable_proc}}, label:'{{i.datetime}}'},
+                {% endfor %}
+              ]
+            },
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "sleep - {label} - {y} ",
+              legendText: "sleep",
+              lineThickness: 3,
+              dataPoints: [
+                {% for i in perf_sum %}
+                {  y: {{i.sleep_proc}}, label:'{{i.datetime}}'},
+                {% endfor %}
+              ]
+            },
+          ]
+        });
+        chart.render();
+        var chart = new CanvasJS.Chart("mem_chart",
+        {
+          theme: "theme1",
+          title:{
+            text: "Memory(MB)",
+            fontFamily: "fantasy"
+          },
+          axisY:{
+            gridColor: "#e3e3e3"
+          },
+          toolTip: {
+            shared: true
+          },
+          legend: {
+                verticalAlign: "center",
+                horizontalAlign: "right",
+                cursor: "pointer",
+                itemclick: function (e) {
+                    //console.log("legend click: " + e.dataPointIndex);
+                    //console.log(e);
+                    if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                    } else {
+                        e.dataSeries.visible = true;
+                    }
+
+                    e.chart.render();
+                }
+            },
+          animationEnabled: true,
+          zoomEnabled:true,
+          data: [
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "used_swap - {label} - {y}",
+              legendText: "used_swap",
+              lineThickness: 3,
+              dataPoints: [
+                {% for i in perf_sum %}
+                {  y: Math.round({{i.used_swap}}/1024), label:'{{i.datetime}}'},
+                {% endfor %}
+              ]
+            },
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "free_memory - {label} - {y}",
+              legendText: "free_memory",
+              lineThickness: 3,
+              dataPoints: [
+                {% for i in perf_sum %}
+                {  y: Math.round({{i.free_memory}}/1024), label:'{{i.datetime}}'},
+                {% endfor %}
+              ]
+            },
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "used_buffer - {label} - {y}",
+              legendText: "used_buffer",
+              lineThickness: 3,
+              dataPoints: [
+                {% for i in perf_sum %}
+                {  y: Math.round({{i.used_buffer}}/1024), label:'{{i.datetime}}'},
+                {% endfor %}
+              ]
+            },
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "used_cache - {label} - {y}",
+              legendText: "used_cache",
+              lineThickness: 3,
+              dataPoints: [
+                {% for i in perf_sum %}
+                {  y: Math.round({{i.used_cache}}/1024), label:'{{i.datetime}}'},
+                {% endfor %}
+              ]
+            },
+          ]
+        });
+        chart.render();
+        var chart = new CanvasJS.Chart("swap_chart",
+        {
+          theme: "theme1",
+          title:{
+            text: "SWAP(KB/s)",
+            fontFamily: "fantasy"
+          },
+          toolTip: {
+            shared: true
+          },
+          axisY:{
+            gridColor: "#e3e3e3"
+          },
+          legend: {
+                verticalAlign: "center",
+                horizontalAlign: "right",
+                cursor: "pointer",
+                itemclick: function (e) {
+                    //console.log("legend click: " + e.dataPointIndex);
+                    //console.log(e);
+                    if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                    } else {
+                        e.dataSeries.visible = true;
+                    }
+
+                    e.chart.render();
+                }
+            },
+          animationEnabled: true,
+          zoomEnabled:true,
+          data: [
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "Input - {label} - {y} ",
+              legendText: "Input",
+              lineThickness: 3,
+              dataPoints: [
+                {% for i in perf_sum %}
+                {  y: {{i.swap_in}}, label:'{{i.datetime}}'},
+                {% endfor %}
+              ]
+            },
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "Output - {label} - {y} ",
+              legendText: "Output",
+              lineThickness: 3,
+              dataPoints: [
+                {% for i in perf_sum %}
+                {  y: {{i.swap_out}}, label:'{{i.datetime}}'},
+                {% endfor %}
+              ]
+            },
+          ]
+        });
+        chart.render();
+        var chart = new CanvasJS.Chart("io_chart",
+        {
+          theme: "theme1",
+          title:{
+            text: "IO(block/s)",
+            fontFamily: "fantasy"
+          },
+          axisY:{
+            gridColor: "#e3e3e3"
+          },
+          toolTip: {
+            shared: true
+          },
+          legend: {
+                verticalAlign: "center",
+                horizontalAlign: "right",
+                cursor: "pointer",
+                itemclick: function (e) {
+                    //console.log("legend click: " + e.dataPointIndex);
+                    //console.log(e);
+                    if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                    } else {
+                        e.dataSeries.visible = true;
+                    }
+
+                    e.chart.render();
+                }
+            },
+          animationEnabled: true,
+          zoomEnabled:true,
+          data: [
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "Input - {label} - {y} ",
+              legendText: "Input",
+              lineThickness: 3,
+              dataPoints: [
+                {% for i in perf_sum %}
+                {  y: {{i.input_memory}}, label:'{{i.datetime}}'},
+                {% endfor %}
+              ]
+            },
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "Output - {label} - {y} ",
+              legendText: "Output",
+              lineThickness: 3,
+              dataPoints: [
+                {% for i in perf_sum %}
+                {  y: {{i.output_memory}}, label:'{{i.datetime}}'},
+                {% endfor %}
+              ]
+            },
+
+          ]
+        });
+        chart.render();
+        {% endif %}
+        var chart = new CanvasJS.Chart("disk_chart",
+      	{
+      		theme: "theme1",
+      		title:{
+            text: "Disk Usage",
+            fontFamily: "fantasy"
+      		},
+          toolTip: {
+            shared: true
+          },
+          animationEnabled: true,
+          zoomEnabled:true,
+          legend: {
+                cursor: "pointer",
+                itemclick: function (e) {
+                    //console.log("legend click: " + e.dataPointIndex);
+                    //console.log(e);
+                    if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                    } else {
+                        e.dataSeries.visible = true;
+                    }
+
+                    e.chart.render();
+                }
+            },
+      		data: [
+
+        		{
+              type: "stackedColumn100",
+              showInLegend: true,
+              color: 'red',
+              legendText: "Used",
+              indexLabel: "#percent %",
+        			indexLabelPlacement: "inside",
+        			indexLabelFontColor: "white",
+              toolTipContent:  "Used {name} - {y} GB",
+              lineThickness: 3,
+        			dataPoints: [
+                {% for i in disk %}
+        				{  y: Math.round({{i.Used}}/1024/1024*100)/100, label:'{{i.Mounted}} Total:'+Math.round({{i.Total}}/1024/1024*100)/100+'GB', name:'{{i.Mounted}}'},
+                {% endfor %}
+        			]
+        		},
+
+
+        		{
+              type: "stackedColumn100",
+              showInLegend: true,
+              color: 'blue',
+              legendText: "Free",
+              indexLabel: "#percent %",
+        			indexLabelPlacement: "inside",
+        			indexLabelFontColor: "white",
+              toolTipContent:  "Free {name} - {y} GB",
+              lineThickness: 3,
+        			dataPoints: [
+                {% for i in disk %}
+        				{  y: Math.round({{i.Available}}/1024/1024*100)/100, label:'{{i.Mounted}} Total:'+Math.round({{i.Total}}/1024/1024*100)/100+'GB', name:'{{i.Mounted}}'},
+                {% endfor %}
+        			]
+        		},
+
+
+
+      		]
+      	});
+      	chart.render();
+      }
+      function openpage(e){
+      console.log(e.dataPoint);
+      var url = e.dataPoint.detail;
+      var newwin = window.open();   //此行一定要如此書寫,否則失效
+      newwin.location= url;   // url是 cgi 程式或者超連結 html
+      }
+
+      function printPage() {
+            window.print();
+      }
+
+    </script>
+
+{% endblock javascripts %}

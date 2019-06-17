@@ -1,0 +1,16 @@
+dbmon_DailyReport
+dbmon_Tsm
+dbmon_FrequentExtents
+dbmon_Tbspace
+dbmon_BufferCacheHitRatio
+dbmon_Dbsize
+dbmon_Session
+dbmon_Dbinfo
+dbmon_Pga
+dbmon_Sga
+dbmon_DailyDesc
+dbmon_PerfRecord
+dbmon_DictionaryCacheHitRatio
+dbmon_SQLCacheHitRatio
+dbmon_Cpucount
+dbmon_DiskUsage

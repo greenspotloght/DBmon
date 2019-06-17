@@ -1,0 +1,12 @@
+#Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# sqlite files
+*.sqlite3
+
+# CONF
+dbmon/settings_s.py
+
+db.py
+

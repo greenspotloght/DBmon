@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}GreenSys{% endblock %}
+{% block content %}
+
+
+		<div class="col-sm-4">
+	    <h3><span style="font-family:Arial,cursive"><strong>Change Password</strong></span></h3>
+			{%if newpsw%}
+				<script language="JavaScript1.2" type="text/javascript">
+				function delayURL(url, time) {
+				setTimeout("top.location.href='" + url + "'", time);
+				}
+				</script>
+				<h4 class="text-success"><strong>{{message}}</strong></h4>
+				<h4 class="text-danger"><strong>請用您的新密碼重新 <a href="/accounts/login/">登入</a> !</strong> </h4>
+				<h4 class="text-information">將在5秒後跳至登入頁面</h4>
+				<script type="text/javascript">
+				delayURL("/accounts/login/", 5000);
+				</script>
+			{%else%}
+		    	<div class="well" style="background-color:lavender;">
+				  <form role="form" enctype="multipart/form-data" method="post">
+				  	<div class="form-group">
+					    <label for="UserName">使用者</label>
+	    				<p class="form-control-static">{{ user }}</p>
+	    			</div>
+	    			{% csrf_token %}
+				    <table>
+				    	{% load bootstrap %}
+				        {{form|bootstrap}}
+				    </table>
+					<input type="submit" class="btn btn-info btn-sm" value="Save Changes" id="Save"/>
+
+				  </form>
+				</div>
+
+				<p class="text-danger"><strong>{{message}}</strong>
+			{%endif%}
+	    </div>
+
+
+{% endblock %}

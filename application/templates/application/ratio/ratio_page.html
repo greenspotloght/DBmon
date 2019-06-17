@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% block title %} DB Hit Ratio {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+
+{% endblock stylesheets %}
+
+
+{% block content %}
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard_graph">
+
+          <div class="row x_title">
+            <div class="col-md-4 pull-left">
+              <h3>DB Hit Ratio</h3>
+            </div>
+
+            <div class="col-md-8 pull right">
+                  <form action="" method="get" enctype="multipart/form-data">
+                      <div class="col-sm-3">
+                      <label for="date1">起始日期</label>
+                        <input id="date1" type="date" name="date1" placeholder="YYYY-MM-DD" value="{{self.date1}}" onchange="this.form.submit()">
+                      </div>
+                      <div class="col-sm-3">
+                      <label for="date2">結束日期</label>
+                        <input id="date2" type="date" name="date2" placeholder="YYYY-MM-DD" value="{{self.date2}}" onchange="this.form.submit()">
+                      </div>
+                      <div class="col-sm-2">
+                          <select class="form-control" name="host" id="host">
+                            {%for f in self.host_list%}
+                            <option{%if self.host == f%} SELECTED{%endif%}>{{f}}</option>
+                            {%endfor%}
+                          </select>
+                      </div>
+                      <div class="col-sm-1">
+                        <input type="submit" class="btn btn-info btn-sm" value="搜尋" />
+                      </div>
+                      <p class="text-right text-muted">更新時間：{{update_time}}</p>
+                  </form>
+            </div>
+
+          </div>
+          <div class="x_content">
+
+            <!-- 1st row -->
+    		    <div class="row m-b-6">
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+      		        <div class="x_content">
+      		          <div id="dict_chart" style="height: 350px; width: 100%;" ></div>
+    		          </div>
+                </div>
+    		      </div>
+
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+      		        <div class="x_content">
+    		              <div id="buffer_chart" style="height: 350px; width: 100%;" ></div>
+    		          </div>
+    		        </div>
+    		      </div>
+            </div>
+    		    <!-- /1st row -->
+
+    		    <!-- 3rd row -->
+    		    <div class="row">
+              <div class="col-md-6 col-sm-6 col-xs-12" style="margin-left:300px">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>PGA</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+      		        <div class="x_content">
+      		           <div id="sql_chart" style="height: 350px; width: 100%;" ></div>
+    		          </div>
+                </div>
+    		      </div>
+            </div>
+
+
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+
+  </br>
+
+
+
+    <!--</div>
+  </div>-->
+
+{% endblock %}
+
+
+
+
+{% block javascripts %}
+  {{ block.super }}
+    <!-- Chart.js -->
+    {% load static %}
+    <script type="text/javascript" src="{% static "js/canvasjs.min.js" %}"></script>
+    <script type="text/javascript">
+    window.onload = function () {
+
+        var chart = new CanvasJS.Chart("dict_chart",
+      	{
+      		theme: "theme1",
+      		title:{
+            text: "Dictionary Hit Ratio",
+            fontFamily: "fantasy"
+      		},
+          axisY:{
+            minimum: 75,
+            maximum: 100,
+            gridColor: "#e3e3e3"
+          },
+          toolTip: {
+            shared: true
+          },
+          legend: {
+            verticalAlign: "center",
+            horizontalAlign: "right",
+          },
+          animationEnabled: true,
+          zoomEnabled:true,
+      		data: [
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "{label} - {y} %",
+              legendText: "ratio",
+              lineThickness: 3,
+        			dataPoints: [
+                {% for i in dict_ratio %}
+        				{  y: {{i.hit_ratio}}, label:'{{i.datetime}}'},
+                {% endfor %}
+        			]
+        		},
+      		]
+      	});
+        chart.render();
+        var chart = new CanvasJS.Chart("buffer_chart",
+        {
+          theme: "theme1",
+          title:{
+            text: "Buffer Hit Ratio",
+            fontFamily: "fantasy"
+          },
+          toolTip: {
+            shared: true
+          },
+          axisY:{
+            minimum: 75,
+            maximum: 100,
+            gridColor: "#e3e3e3"
+          },
+          legend: {
+            verticalAlign: "center",
+            horizontalAlign: "right",
+          },
+          animationEnabled: true,
+          zoomEnabled:true,
+          data: [
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "{label} - {y} %",
+              legendText: "ratio",
+              lineThickness: 3,
+              dataPoints: [
+                {% for i in buffer_ratio %}
+                {  y: {{i.hit_ratio}}, label:'{{i.datetime}}'},
+                {% endfor %}
+              ]
+            },
+          ]
+        });
+        chart.render();
+        var chart = new CanvasJS.Chart("sql_chart",
+        {
+          theme: "theme1",
+          title:{
+            text: "Library(SQL) Hit Ratio",
+            fontFamily: "fantasy"
+          },
+          toolTip: {
+            shared: true
+          },
+          axisY:{
+            minimum: 75,
+            maximum: 100,
+            gridColor: "#e3e3e3"
+          },
+          legend: {
+            verticalAlign: "center",
+            horizontalAlign: "right",
+          },
+          animationEnabled: true,
+          zoomEnabled:true,
+          data: [
+            {
+              type: "line",
+              showInLegend: true,
+              toolTipContent:  "{label} - {y} %",
+              legendText: "ratio",
+              lineThickness: 3,
+              dataPoints: [
+                {% for i in sql_ratio %}
+                {  y: {{i.gethitratio}}, label:'{{i.datetime}}'},
+                {% endfor %}
+              ]
+            },
+          ]
+        });
+        chart.render();
+      }
+      function openpage(e){
+      console.log(e.dataPoint);
+      var url = e.dataPoint.detail;
+      var newwin = window.open();   //此行一定要如此書寫,否則失效
+      newwin.location= url;   // url是 cgi 程式或者超連結 html
+      }
+    </script>
+
+{% endblock javascripts %}
