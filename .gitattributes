@@ -1,2 +1,4 @@
 static/* linguist-vendored
+old_static/* linguist-vendored
 templates/* linguist-vendored
+application/templates/* linguist-vendored
